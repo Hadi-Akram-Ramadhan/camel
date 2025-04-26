@@ -67,6 +67,7 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <th>No</th>
                                 <th>Username</th>
+                                <th>Nama User</th>
                                 <th>Role</th>
                                 <th>Aksi</th>
                             </tr>
@@ -79,6 +80,7 @@ $result = mysqli_query($conn, $query);
                             <tr>
                                 <td><?php echo $no++; ?></td>
                                 <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                <td><?php echo htmlspecialchars($row['namauser']); ?></td>
                                 <td>
                                     <span class="badge bg-<?php 
                                                 echo $row['role'] == 'administrator' ? 'danger' : 

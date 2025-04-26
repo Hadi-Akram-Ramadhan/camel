@@ -26,13 +26,14 @@ $user = mysqli_fetch_assoc($result);
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $role = mysqli_real_escape_string($conn, $_POST['role']);
+    $namauser = mysqli_real_escape_string($conn, $_POST['namauser']);
     
     // Check if username exists
     $check = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username' AND iduser != '$id'");
     if(mysqli_num_rows($check) > 0) {
         $error = "Username sudah digunakan!";
     } else {
-        $query = "UPDATE user SET username = '$username', role = '$role'";
+        $query = "UPDATE user SET username = '$username', role = '$role', namauser = '$namauser'";
         
         // Update password if provided
         if(!empty($_POST['password'])) {
@@ -89,6 +90,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username"
                                     value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="namauser" class="form-label">Nama User</label>
+                                <input type="text" class="form-control" id="namauser" name="namauser"
+                                    value="<?php echo htmlspecialchars($user['namauser']); ?>" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>

@@ -11,13 +11,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = mysqli_real_escape_string($conn, $_POST['username']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = mysqli_real_escape_string($conn, $_POST['role']);
+    $namauser = mysqli_real_escape_string($conn, $_POST['namauser']);
     
     // Check if username exists
     $check = mysqli_query($conn, "SELECT * FROM user WHERE username = '$username'");
     if(mysqli_num_rows($check) > 0) {
         $error = "Username sudah digunakan!";
     } else {
-        $query = "INSERT INTO user (username, password, role) VALUES ('$username', '$password', '$role')";
+        $query = "INSERT INTO user (username, password, role, namauser) VALUES ('$username', '$password', '$role', '$namauser')";
         if(mysqli_query($conn, $query)) {
             $_SESSION['success'] = "User berhasil ditambahkan!";
             header("Location: index.php");
@@ -64,6 +65,10 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
                                 <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="namauser" class="form-label">Nama User</label>
+                                <input type="text" class="form-control" id="namauser" name="namauser" required>
                             </div>
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
