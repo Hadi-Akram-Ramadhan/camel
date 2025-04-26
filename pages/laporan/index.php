@@ -46,70 +46,276 @@ arsort($menu_terlaris);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan - Sistem Kasir</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+    :root {
+        --primary-color: #2563eb;
+        --secondary-color: #1e40af;
+        --success-color: #059669;
+        --info-color: #0891b2;
+        --background: #f8fafc;
+        --card-bg: #ffffff;
+    }
+
+    body {
+        background-color: var(--background);
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .navbar {
+        background: var(--card-bg) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+        color: #0f172a !important;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .page-title {
+        font-weight: 600;
+        color: #0f172a;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        border: none;
+    }
+
+    .btn-outline-primary {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+
+    .stats-card {
+        padding: 1.5rem;
+        border-radius: 12px;
+        height: 100%;
+    }
+
+    .stats-card.primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .stats-card.success {
+        background: linear-gradient(135deg, #10b981, var(--success-color));
+    }
+
+    .stats-card.info {
+        background: linear-gradient(135deg, #06b6d4, var(--info-color));
+    }
+
+    .stats-card h5 {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+    }
+
+    .stats-card h3 {
+        color: white;
+        font-weight: 600;
+        margin-bottom: 0;
+        font-size: 1.5rem;
+    }
+
+    .stats-card i {
+        font-size: 1.5rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        background-color: #f8fafc;
+        padding: 1rem;
+    }
+
+    .table td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .table-striped>tbody>tr:nth-of-type(odd)>* {
+        background-color: #f8fafc;
+    }
+
+    .table-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #0f172a;
+    }
+
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+
+        body {
+            background: white !important;
+        }
+
+        .card {
+            box-shadow: none !important;
+        }
+
+        .stats-card {
+            border: 1px solid #e2e8f0;
+        }
+
+        .stats-card h5,
+        .stats-card h3 {
+            color: #0f172a !important;
+        }
+    }
+    </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg no-print">
         <div class="container">
-            <a class="navbar-brand" href="../../dashboard.php">Sistem Kasir</a>
+            <a class="navbar-brand" href="../../dashboard.php">
+                <i class="bi bi-arrow-left"></i>
+                Kembali ke Dashboard
+            </a>
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h3>Laporan Transaksi</h3>
-        
+    <div class="container py-4">
+        <h3 class="page-title">
+            <i class="bi bi-graph-up"></i>
+            Laporan Transaksi
+        </h3>
+
         <!-- Filter Form -->
-        <div class="card mb-4">
+        <div class="card mb-4 no-print">
             <div class="card-body">
                 <form method="GET" class="row g-3">
                     <div class="col-md-4">
                         <label for="start_date" class="form-label">Tanggal Mulai</label>
-                        <input type="date" class="form-control" id="start_date" name="start_date" value="<?php echo $start_date; ?>">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
+                            <input type="date" class="form-control" id="start_date" name="start_date"
+                                value="<?php echo $start_date; ?>">
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label for="end_date" class="form-label">Tanggal Selesai</label>
-                        <input type="date" class="form-control" id="end_date" name="end_date" value="<?php echo $end_date; ?>">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-calendar-event"></i>
+                            </span>
+                            <input type="date" class="form-control" id="end_date" name="end_date"
+                                value="<?php echo $end_date; ?>">
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">&nbsp;</label>
-                        <button type="submit" class="btn btn-primary d-block">Filter</button>
+                        <button type="submit" class="btn btn-primary d-block w-100">
+                            <i class="bi bi-funnel"></i>
+                            Filter Data
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Summary Cards -->
-        <div class="row mb-4">
+        <div class="row g-4 mb-4">
             <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Pendapatan</h5>
-                        <h3 class="mb-0">Rp <?php echo number_format($total_pendapatan, 0, ',', '.'); ?></h3>
+                <div class="stats-card primary">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5>Total Pendapatan</h5>
+                        <i class="bi bi-cash-stack"></i>
                     </div>
+                    <h3>Rp <?php echo number_format($total_pendapatan, 0, ',', '.'); ?></h3>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Transaksi</h5>
-                        <h3 class="mb-0"><?php echo $total_transaksi; ?></h3>
+                <div class="stats-card success">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5>Total Transaksi</h5>
+                        <i class="bi bi-receipt"></i>
                     </div>
+                    <h3><?php echo $total_transaksi; ?> Transaksi</h3>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Menu Terlaris</h5>
-                        <h3 class="mb-0"><?php 
-                            $top_menu = array_key_first($menu_terlaris);
-                            echo $top_menu ? htmlspecialchars($top_menu) : '-';
-                        ?></h3>
+                <div class="stats-card info">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5>Menu Terlaris</h5>
+                        <i class="bi bi-star"></i>
                     </div>
+                    <h3><?php 
+                        $top_menu = array_key_first($menu_terlaris);
+                        echo $top_menu ? htmlspecialchars($top_menu) : '-';
+                    ?></h3>
                 </div>
             </div>
         </div>
@@ -118,54 +324,99 @@ arsort($menu_terlaris);
         <div class="card">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Detail Transaksi</h5>
-                    <button onclick="window.print()" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-printer"></i> Cetak
+                    <h5 class="mb-0">
+                        <i class="bi bi-table me-2"></i>
+                        Detail Transaksi
+                    </h5>
+                    <button onclick="window.print()" class="btn btn-outline-primary no-print">
+                        <i class="bi bi-printer"></i>
+                        Cetak Laporan
                     </button>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <?php if(mysqli_num_rows($result) > 0): ?>
-                    <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Tanggal</th>
-                                    <th>Pelanggan</th>
-                                    <th>Menu</th>
-                                    <th>Jumlah</th>
-                                    <th>Total</th>
-                                    <th>Bayar</th>
-                                    <th>Kembalian</th>
-                                    <th>Meja</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php 
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Tanggal</th>
+                                <th>Pelanggan</th>
+                                <th>Menu</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                                <th>Bayar</th>
+                                <th>Kembalian</th>
+                                <th>Meja</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
                                 $no = 1;
                                 while($row = mysqli_fetch_assoc($result)): 
                                     $kembalian = $row['bayar'] - $row['total'];
                                 ?>
-                                    <tr>
-                                        <td><?php echo $no++; ?></td>
-                                        <td><?php echo date('d/m/Y H:i', strtotime($row['tanggal'])); ?></td>
-                                        <td><?php echo htmlspecialchars($row['namapelanggan']); ?></td>
-                                        <td><?php echo htmlspecialchars($row['namamenu']); ?></td>
-                                        <td><?php echo $row['jumlah']; ?></td>
-                                        <td>Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></td>
-                                        <td>Rp <?php echo number_format($row['bayar'], 0, ',', '.'); ?></td>
-                                        <td>Rp <?php echo number_format($kembalian, 0, ',', '.'); ?></td>
-                                        <td><?php echo htmlspecialchars($row['namameja']); ?></td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                            <tr>
+                                <td><?php echo $no++; ?></td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-calendar2"></i>
+                                        <?php echo date('d/m/Y H:i', strtotime($row['tanggal'])); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-person"></i>
+                                        <?php echo htmlspecialchars($row['namapelanggan']); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-cup-hot"></i>
+                                        <?php echo htmlspecialchars($row['namamenu']); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-hash"></i>
+                                        <?php echo $row['jumlah']; ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-cash"></i>
+                                        Rp <?php echo number_format($row['total'], 0, ',', '.'); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-wallet2"></i>
+                                        Rp <?php echo number_format($row['bayar'], 0, ',', '.'); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-cash-coin"></i>
+                                        Rp <?php echo number_format($kembalian, 0, ',', '.'); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-grid-3x3"></i>
+                                        <?php echo htmlspecialchars($row['namameja']); ?>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
                 <?php else: ?>
-                    <div class="alert alert-info">
-                        Tidak ada transaksi pada periode ini.
-                    </div>
+                <div class="p-4 text-center">
+                    <i class="bi bi-inbox text-muted" style="font-size: 2rem"></i>
+                    <p class="mt-2 mb-0 text-muted">Tidak ada transaksi pada periode ini.</p>
+                </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -173,4 +424,5 @@ arsort($menu_terlaris);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+
+</html>
