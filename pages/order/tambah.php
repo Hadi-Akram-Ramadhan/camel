@@ -20,8 +20,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jeniskelamin = mysqli_real_escape_string($conn, $_POST['jeniskelamin']);
     $nohp = mysqli_real_escape_string($conn, $_POST['nohp']);
     $alamat = mysqli_real_escape_string($conn, $_POST['alamat']);
-    $idmenu = mysqli_real_escape_string($conn, $_POST['idmenu']);
-    $jumlah = mysqli_real_escape_string($conn, $_POST['jumlah']);
     $idmeja = mysqli_real_escape_string($conn, $_POST['idmeja']);
     
     // Insert customer first
@@ -30,14 +28,35 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(mysqli_query($conn, $query_pelanggan)) {
         $idpelanggan = mysqli_insert_id($conn);
         
-        // Then insert order
-        $query_pesanan = "INSERT INTO pesanan (idmenu, idpelanggan, jumlah, iduser, idmeja) 
-                         VALUES ('$idmenu', '$idpelanggan', '$jumlah', '" . $_SESSION['user']['id'] . "', '$idmeja')";
+        // Insert order
+        $query_pesanan = "INSERT INTO pesanan (idpelanggan, iduser, idmeja) 
+                         VALUES ('$idpelanggan', '" . $_SESSION['user']['id'] . "', '$idmeja')";
         if(mysqli_query($conn, $query_pesanan)) {
-            // Update table status
-            mysqli_query($conn, "UPDATE meja SET status = 'terisi' WHERE idmeja = '$idmeja'");
-            header("Location: index.php");
-            exit();
+            $idpesanan = mysqli_insert_id($conn);
+            
+            // Handle multiple menu items
+            $idmenu_array = $_POST['idmenu'];
+            $jumlah_array = $_POST['jumlah'];
+            
+            $success = true;
+            for($i = 0; $i < count($idmenu_array); $i++) {
+                $idmenu = mysqli_real_escape_string($conn, $idmenu_array[$i]);
+                $jumlah = mysqli_real_escape_string($conn, $jumlah_array[$i]);
+                
+                $query_detail = "INSERT INTO detail_pesanan (idpesanan, idmenu, jumlah) 
+                               VALUES ('$idpesanan', '$idmenu', '$jumlah')";
+                if(!mysqli_query($conn, $query_detail)) {
+                    $success = false;
+                    break;
+                }
+            }
+            
+            if($success) {
+                // Update table status
+                mysqli_query($conn, "UPDATE meja SET status = 'terisi' WHERE idmeja = '$idmeja'");
+                header("Location: index.php");
+                exit();
+            }
         }
     }
 }
@@ -270,26 +289,41 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
 
                             <h5 class="section-title mt-4">
-                                <i class="bi bi-cart3"></i>
-                                Data Pesanan
+                                <i class="bi bi-cart"></i>
+                                Menu Pesanan
                             </h5>
-                            <div class="mb-3">
-                                <label for="idmenu" class="form-label">Menu</label>
-                                <select class="form-select" id="idmenu" name="idmenu" required>
-                                    <option value="">Pilih Menu</option>
-                                    <?php while($menu = mysqli_fetch_assoc($result_menu)): ?>
-                                    <option value="<?php echo $menu['idmenu']; ?>">
-                                        <?php echo htmlspecialchars($menu['namamenu']); ?> -
-                                        Rp <?php echo number_format($menu['harga'], 0, ',', '.'); ?>
-                                    </option>
-                                    <?php endwhile; ?>
-                                </select>
+                            <div id="menu-container">
+                                <div class="menu-item mb-3">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Menu</label>
+                                            <select class="form-select" name="idmenu[]" required>
+                                                <option value="">Pilih Menu</option>
+                                                <?php while($menu = mysqli_fetch_assoc($result_menu)): ?>
+                                                <option value="<?php echo $menu['idmenu']; ?>">
+                                                    <?php echo $menu['namamenu']; ?> - Rp
+                                                    <?php echo number_format($menu['harga'], 0, ',', '.'); ?>
+                                                </option>
+                                                <?php endwhile; ?>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Jumlah</label>
+                                            <input type="number" class="form-control" name="jumlah[]" min="1" value="1"
+                                                required>
+                                        </div>
+                                        <div class="col-md-2 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger remove-menu"
+                                                style="display: none;">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="jumlah" class="form-label">Jumlah</label>
-                                <input type="number" class="form-control" id="jumlah" name="jumlah" min="1"
-                                    placeholder="Masukkan jumlah pesanan" required>
-                            </div>
+                            <button type="button" class="btn btn-secondary mb-3" id="add-menu">
+                                <i class="bi bi-plus"></i> Tambah Menu
+                            </button>
                             <div class="mb-4">
                                 <label for="idmeja" class="form-label">Meja</label>
                                 <select class="form-select" id="idmeja" name="idmeja" required>
@@ -321,6 +355,36 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuContainer = document.getElementById('menu-container');
+        const addMenuBtn = document.getElementById('add-menu');
+
+        // Clone menu item template
+        function cloneMenuItem() {
+            const template = menuContainer.querySelector('.menu-item').cloneNode(true);
+            template.querySelector('select').value = '';
+            template.querySelector('input[type="number"]').value = '1';
+            template.querySelector('.remove-menu').style.display = 'block';
+            return template;
+        }
+
+        // Add new menu item
+        addMenuBtn.addEventListener('click', function() {
+            menuContainer.appendChild(cloneMenuItem());
+        });
+
+        // Remove menu item
+        menuContainer.addEventListener('click', function(e) {
+            if (e.target.closest('.remove-menu')) {
+                const menuItem = e.target.closest('.menu-item');
+                if (menuContainer.children.length > 1) {
+                    menuItem.remove();
+                }
+            }
+        });
+    });
+    </script>
 </body>
 
 </html>

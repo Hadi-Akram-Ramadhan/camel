@@ -34,15 +34,22 @@ CREATE TABLE pelanggan (
 
 CREATE TABLE pesanan (
     idpesanan INT PRIMARY KEY AUTO_INCREMENT,
-    idmenu INT,
     idpelanggan INT,
-    jumlah INT,
     iduser INT,
     idmeja INT,
-    FOREIGN KEY (idmenu) REFERENCES menu(idmenu),
+    tanggal TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idpelanggan) REFERENCES pelanggan(idpelanggan),
     FOREIGN KEY (iduser) REFERENCES user(iduser),
     FOREIGN KEY (idmeja) REFERENCES meja(idmeja)
+);
+
+CREATE TABLE detail_pesanan (
+    iddetail INT PRIMARY KEY AUTO_INCREMENT,
+    idpesanan INT,
+    idmenu INT,
+    jumlah INT,
+    FOREIGN KEY (idpesanan) REFERENCES pesanan(idpesanan),
+    FOREIGN KEY (idmenu) REFERENCES menu(idmenu)
 );
 
 CREATE TABLE transaksi (
@@ -52,7 +59,6 @@ CREATE TABLE transaksi (
     bayar INT,
     tanggal TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idpesanan) REFERENCES pesanan(idpesanan)
-    
 );
 
 -- Insert default admin user

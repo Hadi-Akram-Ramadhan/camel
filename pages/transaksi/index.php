@@ -8,23 +8,30 @@ if(!isset($_SESSION['user']) || $_SESSION['user']['role'] != 'kasir') {
 require_once '../../config/database.php';
 
 // Get pending orders (not yet in transactions)
-$query = "SELECT p.*, m.namamenu, m.harga, pl.namapelanggan, mj.namameja 
+$query = "SELECT p.*, pl.namapelanggan, mj.namameja,
+          GROUP_CONCAT(CONCAT(m.namamenu, ' (', dp.jumlah, ')') SEPARATOR ', ') as menu_items,
+          SUM(dp.jumlah * m.harga) as total
           FROM pesanan p 
-          JOIN menu m ON p.idmenu = m.idmenu 
           JOIN pelanggan pl ON p.idpelanggan = pl.idpelanggan
           JOIN meja mj ON p.idmeja = mj.idmeja
+          JOIN detail_pesanan dp ON p.idpesanan = dp.idpesanan
+          JOIN menu m ON dp.idmenu = m.idmenu
           LEFT JOIN transaksi t ON p.idpesanan = t.idpesanan
           WHERE t.idtransaksi IS NULL
+          GROUP BY p.idpesanan, pl.namapelanggan, mj.namameja
           ORDER BY p.idpesanan DESC";
 $result = mysqli_query($conn, $query);
 
 // Get completed transactions
-$query_transaksi = "SELECT t.*, p.jumlah, m.namamenu, m.harga, pl.namapelanggan, mj.namameja 
+$query_transaksi = "SELECT t.*, pl.namapelanggan, mj.namameja,
+                    GROUP_CONCAT(CONCAT(m.namamenu, ' (', dp.jumlah, ')') SEPARATOR ', ') as menu_items
                     FROM transaksi t
                     JOIN pesanan p ON t.idpesanan = p.idpesanan
-                    JOIN menu m ON p.idmenu = m.idmenu
                     JOIN pelanggan pl ON p.idpelanggan = pl.idpelanggan
                     JOIN meja mj ON p.idmeja = mj.idmeja
+                    JOIN detail_pesanan dp ON p.idpesanan = dp.idpesanan
+                    JOIN menu m ON dp.idmenu = m.idmenu
+                    GROUP BY t.idtransaksi, pl.namapelanggan, mj.namameja
                     ORDER BY t.tanggal DESC";
 $result_transaksi = mysqli_query($conn, $query_transaksi);
 ?>
@@ -141,6 +148,13 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
     .btn-success {
         background: var(--success-gradient);
         border: none;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: var(--success-gradient);
+        color: white;
+        opacity: 0.9;
     }
 
     .page-title {
@@ -237,8 +251,6 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                                 <th>No</th>
                                 <th>Pelanggan</th>
                                 <th>Menu</th>
-                                <th>Jumlah</th>
-                                <th>Harga</th>
                                 <th>Total</th>
                                 <th>Meja</th>
                                 <th>Aksi</th>
@@ -248,7 +260,6 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                             <?php 
                                 $no = 1;
                                 while($row = mysqli_fetch_assoc($result)): 
-                                    $total = $row['jumlah'] * $row['harga'];
                                 ?>
                             <tr>
                                 <td><?php echo $no++; ?></td>
@@ -258,10 +269,8 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                                         <?php echo htmlspecialchars($row['namapelanggan']); ?>
                                     </div>
                                 </td>
-                                <td><?php echo htmlspecialchars($row['namamenu']); ?></td>
-                                <td class="text-center"><?php echo $row['jumlah']; ?></td>
-                                <td class="price">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
-                                <td class="price">Rp <?php echo number_format($total, 0, ',', '.'); ?></td>
+                                <td><?php echo htmlspecialchars($row['menu_items']); ?></td>
+                                <td class="price">Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="bi bi-diagram-3 text-muted"></i>
@@ -270,7 +279,7 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                                 </td>
                                 <td>
                                     <a href="bayar.php?id=<?php echo $row['idpesanan']; ?>"
-                                        class="btn btn-success btn-sm">
+                                        lass="btn btn-success btn-sm">
                                         <i class="bi bi-cash"></i>
                                         Bayar
                                     </a>
@@ -307,7 +316,6 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                                 <th>Tanggal</th>
                                 <th>Pelanggan</th>
                                 <th>Menu</th>
-                                <th>Jumlah</th>
                                 <th>Total</th>
                                 <th>Bayar</th>
                                 <th>Kembalian</th>
@@ -334,8 +342,7 @@ $result_transaksi = mysqli_query($conn, $query_transaksi);
                                         <?php echo htmlspecialchars($row['namapelanggan']); ?>
                                     </div>
                                 </td>
-                                <td><?php echo htmlspecialchars($row['namamenu']); ?></td>
-                                <td class="text-center"><?php echo $row['jumlah']; ?></td>
+                                <td><?php echo htmlspecialchars($row['menu_items']); ?></td>
                                 <td class="price">Rp <?php echo number_format($row['total'], 0, ',', '.'); ?></td>
                                 <td class="price">Rp <?php echo number_format($row['bayar'], 0, ',', '.'); ?></td>
                                 <td class="price">Rp <?php echo number_format($kembalian, 0, ',', '.'); ?></td>

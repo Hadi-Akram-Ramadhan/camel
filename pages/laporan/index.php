@@ -12,13 +12,16 @@ $start_date = isset($_GET['start_date']) ? $_GET['start_date'] : date('Y-m-d', s
 $end_date = isset($_GET['end_date']) ? $_GET['end_date'] : date('Y-m-d');
 
 // Base query
-$query = "SELECT t.*, p.jumlah, m.namamenu, m.harga, pl.namapelanggan, mj.namameja 
+$query = "SELECT t.*, pl.namapelanggan, mj.namameja,
+          GROUP_CONCAT(CONCAT(m.namamenu, ' (', dp.jumlah, ')') SEPARATOR ', ') as menu_items
           FROM transaksi t
           JOIN pesanan p ON t.idpesanan = p.idpesanan
-          JOIN menu m ON p.idmenu = m.idmenu
           JOIN pelanggan pl ON p.idpelanggan = pl.idpelanggan
           JOIN meja mj ON p.idmeja = mj.idmeja
+          JOIN detail_pesanan dp ON p.idpesanan = dp.idpesanan
+          JOIN menu m ON dp.idmenu = m.idmenu
           WHERE DATE(t.tanggal) BETWEEN '$start_date' AND '$end_date'
+          GROUP BY t.idtransaksi, pl.namapelanggan, mj.namameja
           ORDER BY t.tanggal DESC";
 $result = mysqli_query($conn, $query);
 
@@ -31,10 +34,19 @@ if($result) {
     $total_transaksi = mysqli_num_rows($result);
     while($row = mysqli_fetch_assoc($result)) {
         $total_pendapatan += $row['total'];
-        if(isset($menu_terlaris[$row['namamenu']])) {
-            $menu_terlaris[$row['namamenu']] += $row['jumlah'];
-        } else {
-            $menu_terlaris[$row['namamenu']] = $row['jumlah'];
+        
+        // Count menu items for menu terlaris
+        $items = explode(', ', $row['menu_items']);
+        foreach($items as $item) {
+            preg_match('/(.+) \((\d+)\)/', $item, $matches);
+            if (isset($matches[1]) && isset($matches[2])) {
+                $menu_name = trim($matches[1]); // Clean up the menu name
+                $quantity = (int)$matches[2];
+                if (!isset($menu_terlaris[$menu_name])) {
+                    $menu_terlaris[$menu_name] = 0;
+                }
+                $menu_terlaris[$menu_name] += $quantity;
+            }
         }
     }
     // Reset pointer
@@ -42,7 +54,9 @@ if($result) {
 }
 
 // Sort menu terlaris
-arsort($menu_terlaris);
+if (!empty($menu_terlaris)) {
+    arsort($menu_terlaris);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -313,8 +327,12 @@ arsort($menu_terlaris);
                         <i class="bi bi-star"></i>
                     </div>
                     <h3><?php 
-                        $top_menu = array_key_first($menu_terlaris);
-                        echo $top_menu ? htmlspecialchars($top_menu) : '-';
+                        if (!empty($menu_terlaris)) {
+                            $top_menu = array_key_first($menu_terlaris);
+                            echo htmlspecialchars($top_menu);
+                        } else {
+                            echo '-';
+                        }
                     ?></h3>
                 </div>
             </div>
@@ -374,13 +392,13 @@ arsort($menu_terlaris);
                                 <td>
                                     <div class="table-info">
                                         <i class="bi bi-cup-hot"></i>
-                                        <?php echo htmlspecialchars($row['namamenu']); ?>
+                                        <?php echo htmlspecialchars($row['menu_items']); ?>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="table-info">
                                         <i class="bi bi-hash"></i>
-                                        <?php echo $row['jumlah']; ?>
+                                        -
                                     </div>
                                 </td>
                                 <td>

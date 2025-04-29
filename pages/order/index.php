@@ -15,12 +15,15 @@ if(isset($_GET['delete'])) {
     exit();
 }
 
-$query = "SELECT p.*, m.namamenu, pl.namapelanggan, mj.namameja 
+$query = "SELECT p.*, pl.namapelanggan, mj.namameja,
+          GROUP_CONCAT(CONCAT(m.namamenu, ' (', dp.jumlah, ')') SEPARATOR ', ') as menu_items
           FROM pesanan p 
-          JOIN menu m ON p.idmenu = m.idmenu 
           JOIN pelanggan pl ON p.idpelanggan = pl.idpelanggan
           JOIN meja mj ON p.idmeja = mj.idmeja
+          JOIN detail_pesanan dp ON p.idpesanan = dp.idpesanan
+          JOIN menu m ON dp.idmenu = m.idmenu
           WHERE p.iduser = " . $_SESSION['user']['id'] . "
+          GROUP BY p.idpesanan
           ORDER BY p.idpesanan DESC";
 $result = mysqli_query($conn, $query);
 ?>
@@ -204,7 +207,6 @@ $result = mysqli_query($conn, $query);
                                 <th>No</th>
                                 <th>Pelanggan</th>
                                 <th>Menu</th>
-                                <th>Jumlah</th>
                                 <th>Meja</th>
                                 <th>Aksi</th>
                             </tr>
@@ -225,10 +227,9 @@ $result = mysqli_query($conn, $query);
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="bi bi-cup-hot text-muted"></i>
-                                        <?php echo htmlspecialchars($row['namamenu']); ?>
+                                        <?php echo htmlspecialchars($row['menu_items']); ?>
                                     </div>
                                 </td>
-                                <td class="text-center"><?php echo $row['jumlah']; ?></td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <i class="bi bi-diagram-3 text-muted"></i>
