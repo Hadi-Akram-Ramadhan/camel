@@ -64,4 +64,4 @@ CREATE TABLE transaksi (
 -- Insert default admin user
 INSERT INTO user (namauser, username, password, role) VALUES 
 ('Administrator', 'admin', '$2a$12$faqlYTUkZE.a3KoGwyfGteDLOKn0oTfIIPTCpRgK03NzPiNb1R.5.', 'administrator');
--- Default password: password 
+-- Default password: admin
