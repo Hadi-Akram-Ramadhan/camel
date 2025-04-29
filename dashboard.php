@@ -124,63 +124,29 @@ $nama = $_SESSION['user']['nama'];
             <a class="navbar-brand fw-bold" href="#">
                 <i class="bi bi-shop me-2"></i>Sistem Kasir
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <?php if($role == 'administrator'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/user/"><i class="bi bi-people me-1"></i>User</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/meja/"><i class="bi bi-table me-1"></i>Meja</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/menu/"><i class="bi bi-card-list me-1"></i>Menu</a>
-                    </li>
-                    <?php endif; ?>
-
-                    <?php if($role == 'waiter'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/menu/"><i class="bi bi-card-list me-1"></i>Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/order/"><i class="bi bi-cart me-1"></i>Order</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/laporan/"><i class="bi bi-file-text me-1"></i>Laporan</a>
-                    </li>
-                    <?php endif; ?>
-
-                    <?php if($role == 'kasir'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/transaksi/"><i class="bi bi-cash me-1"></i>Transaksi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/laporan/"><i class="bi bi-file-text me-1"></i>Laporan</a>
-                    </li>
-                    <?php endif; ?>
-
-                    <?php if($role == 'owner'): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/laporan/"><i class="bi bi-file-text me-1"></i>Laporan</a>
-                    </li>
-                    <?php endif; ?>
-                </ul>
-                <div class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown"
-                            role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-person-circle"></i>
-                            <?php echo $nama; ?>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
-                            <li><a class="dropdown-item" href="auth/logout.php">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                </a></li>
-                        </ul>
-                    </li>
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="navbarDropdown"
+                        role="button" data-bs-toggle="dropdown">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                style="width: 32px; height: 32px;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div class="d-none d-md-block">
+                                <div class="fw-semibold"><?php echo $nama; ?></div>
+                                <small class="text-muted"><?php echo ucfirst($role); ?></small>
+                            </div>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center gap-2" href="auth/logout.php">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
