@@ -65,6 +65,7 @@ if (!empty($menu_terlaris)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan - Sistem Kasir</title>
+    <link rel="icon" type="image/x-icon" href="assets/icon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -346,10 +347,11 @@ if (!empty($menu_terlaris)) {
                         <i class="bi bi-table me-2"></i>
                         Detail Transaksi
                     </h5>
-                    <button onclick="window.print()" class="btn btn-outline-primary no-print">
+                    <a href="print.php?start_date=<?php echo $start_date; ?>&end_date=<?php echo $end_date; ?>"
+                        target="_blank" class="btn btn-outline-primary no-print">
                         <i class="bi bi-printer"></i>
                         Cetak Laporan
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="card-body p-0">
@@ -362,7 +364,6 @@ if (!empty($menu_terlaris)) {
                                 <th>Tanggal</th>
                                 <th>Pelanggan</th>
                                 <th>Menu</th>
-                                <th>Jumlah</th>
                                 <th>Total</th>
                                 <th>Bayar</th>
                                 <th>Kembalian</th>
@@ -393,12 +394,6 @@ if (!empty($menu_terlaris)) {
                                     <div class="table-info">
                                         <i class="bi bi-cup-hot"></i>
                                         <?php echo htmlspecialchars($row['menu_items']); ?>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="table-info">
-                                        <i class="bi bi-hash"></i>
-                                        -
                                     </div>
                                 </td>
                                 <td>

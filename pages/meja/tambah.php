@@ -20,10 +20,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Meja - Sistem Kasir</title>
+    <link rel="icon" type="image/x-icon" href="assets/icon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -133,6 +135,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -161,7 +164,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <span class="input-group-text">
                                         <i class="bi bi-grid-3x3"></i>
                                     </span>
-                                    <input type="text" class="form-control" id="namameja" name="namameja" placeholder="Contoh: Meja 1" required>
+                                    <input type="text" class="form-control" id="namameja" name="namameja"
+                                        placeholder="Contoh: Meja 1" required>
                                 </div>
                             </div>
                             <div class="mb-4">
@@ -170,7 +174,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <span class="input-group-text">
                                         <i class="bi bi-people"></i>
                                     </span>
-                                    <input type="number" class="form-control" id="kapasitas" name="kapasitas" placeholder="Jumlah orang" required>
+                                    <input type="number" class="form-control" id="kapasitas" name="kapasitas"
+                                        placeholder="Jumlah orang" required>
                                 </div>
                             </div>
                             <div class="d-flex gap-2">
@@ -192,4 +197,5 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+
+</html>

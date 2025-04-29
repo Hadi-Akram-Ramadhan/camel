@@ -20,10 +20,12 @@ $result = mysqli_query($conn, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Meja - Sistem Kasir</title>
+    <link rel="icon" type="image/x-icon" href="assets/icon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -171,6 +173,7 @@ $result = mysqli_query($conn, $query);
     }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -212,46 +215,47 @@ $result = mysqli_query($conn, $query);
                             $no = 1;
                             while($row = mysqli_fetch_assoc($result)): 
                             ?>
-                                <tr>
-                                    <td><?php echo $no++; ?></td>
-                                    <td>
-                                        <div class="table-info">
-                                            <i class="bi bi-grid-3x3"></i>
-                                            <?php echo htmlspecialchars($row['namameja']); ?>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="table-info">
-                                            <i class="bi bi-people"></i>
-                                            <?php echo $row['kapasitas']; ?> orang
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <?php if($row['status'] == 'tersedia'): ?>
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle"></i>
-                                                Tersedia
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="badge bg-danger">
-                                                <i class="bi bi-x-circle"></i>
-                                                Terisi
-                                            </span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <a href="edit.php?id=<?php echo $row['idmeja']; ?>" class="btn btn-warning">
-                                                <i class="bi bi-pencil"></i>
-                                                Edit
-                                            </a>
-                                            <a href="?delete=<?php echo $row['idmeja']; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus meja ini?')">
-                                                <i class="bi bi-trash"></i>
-                                                Hapus
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td><?php echo $no++; ?></td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-grid-3x3"></i>
+                                        <?php echo htmlspecialchars($row['namameja']); ?>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-info">
+                                        <i class="bi bi-people"></i>
+                                        <?php echo $row['kapasitas']; ?> orang
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php if($row['status'] == 'tersedia'): ?>
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle"></i>
+                                        Tersedia
+                                    </span>
+                                    <?php else: ?>
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle"></i>
+                                        Terisi
+                                    </span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="edit.php?id=<?php echo $row['idmeja']; ?>" class="btn btn-warning">
+                                            <i class="bi bi-pencil"></i>
+                                            Edit
+                                        </a>
+                                        <a href="?delete=<?php echo $row['idmeja']; ?>" class="btn btn-danger"
+                                            onclick="return confirm('Yakin ingin menghapus meja ini?')">
+                                            <i class="bi bi-trash"></i>
+                                            Hapus
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                             <?php endwhile; ?>
                         </tbody>
                     </table>
@@ -272,4 +276,5 @@ $result = mysqli_query($conn, $query);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</html> 
+
+</html>
