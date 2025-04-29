@@ -65,7 +65,7 @@ if (!empty($menu_terlaris)) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Transaksi</title>
-    <link rel="icon" type="image/x-icon" href="assets/icon.png">
+    <link rel="icon" type="image/x-icon" href="../../assets/icon.png">
     <style>
     @page {
         size: A4;
